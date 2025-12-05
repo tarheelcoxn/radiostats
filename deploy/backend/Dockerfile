@@ -1,11 +1,7 @@
 FROM python
 
 RUN apt-get update -y && \
-    apt-get install -y apt-transport-https apt-utils build-essential libexpat1-dev libpcre3-dev apache2-dev apache2 libssl-dev nano && \
-    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys CC86BB64 && \
-    echo "deb http://ppa.launchpad.net/rmescandon/yq/ubuntu focal main" >> /etc/apt/sources.list && \
-    apt-get update -y && \
-    apt-get install -y yq
+    apt-get install -y build-essential libexpat1-dev libpcre3-dev apache2-dev apache2 libssl-dev nano yq
 COPY backend/requirements.txt /app/requirements.txt
 WORKDIR /app
 
