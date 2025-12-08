@@ -4,7 +4,7 @@ certifi==2025.11.12
 chardet==5.2.0
 idna==3.11
 loguru==0.7.3
-numpy==2.3.5
+numpy
 pandas==2.3.3
 python-dateutil==2.8.2
 pytz==2025.2
