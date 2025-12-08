@@ -28,8 +28,8 @@ pip install -r backend\requirements.txt
 __Mac/Linux__
 ```sh
 cd /path/to/repository-root
-virtualenv .
-source bin/activate
+python3 -m venv ./.radiostats_venv
+source ./.radiostats_venv/bin/activate
 pip install -r agent/requirements.txt
 pip install -r backend/requirements.txt
 ```

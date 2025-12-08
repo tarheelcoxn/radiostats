@@ -1,7 +1,7 @@
 FROM python
 
 RUN apt-get update -y && \
-    apt-get install -y build-essential libexpat1-dev libpcre3-dev apache2-dev apache2 libssl-dev nano yq
+    apt-get install -y build-essential libexpat1-dev apache2-dev apache2 libssl-dev nano yq
 COPY backend/requirements.txt /app/requirements.txt
 WORKDIR /app
 
