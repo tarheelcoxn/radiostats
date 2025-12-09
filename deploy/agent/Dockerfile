@@ -1,4 +1,4 @@
-FROM python
+FROM python:3.14
 
 COPY agent/requirements.txt /app/requirements.txt
 WORKDIR /app

@@ -1,4 +1,4 @@
-FROM python
+FROM python:3.14
 
 RUN apt-get update -y && \
     apt-get install -y build-essential libexpat1-dev apache2-dev apache2 libssl-dev nano yq
