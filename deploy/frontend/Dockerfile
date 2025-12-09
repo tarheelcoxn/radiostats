@@ -1,4 +1,4 @@
-FROM node:current-alpine as build
+FROM node:lts-alpine as build
 
 WORKDIR /app
 
@@ -13,8 +13,8 @@ RUN yarn add react-scripts
 COPY frontend ./
 RUN yarn build
 
-FROM nginx:stable-alpine
-RUN apk add bash && apk add yq --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community
+FROM nginx:alpine
+RUN apk add bash && apk add yq-go
 COPY --from=build /app/build /usr/share/nginx/html
 COPY deploy/frontend/site.template /etc/nginx/conf.d/default.template
 COPY deploy/frontend/env.sh ./
