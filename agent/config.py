@@ -1,5 +1,6 @@
 import os
-import ruamel.yaml as yaml
+from ruamel.yaml import YAML
+from ruamel.yaml.error import YAMLError
 
 from pathlib import Path
 
@@ -10,11 +11,13 @@ if 'CONFIG_PATH' in os.environ:
 else:
     CONFIG_PATH = BASE_DIR.parent / "config.yml"
 
+yaml = YAML(typ='safe', pure=True)
+
 with open(CONFIG_PATH, mode='r') as file:
 	try:
-	    config = yaml.safe_load(file)
-	except yaml.YAMLError as exc:
-	    print(exc)
+	    config = yaml.load(file)
+	except YAMLError as exc:
+	    print(f"Unable to load {CONFIG_PATH}: {exc}")
 
 DEBUG = config["agent"]["debug"]
 ICECAST_HOSTNAME = config["agent"]["icecast"]["hostname"]
@@ -35,9 +38,9 @@ AGENT_PORT = config["agent"]["port"]
 
 with open(os.path.join(os.path.dirname(CONFIG_PATH), 'mounts.yml'), mode='r') as file:
 	try:
-		mounts = yaml.safe_load(file)
-	except yaml.YAMLError as exc:
-		print(exc)
+		mounts = yaml.load(file)
+	except YAMLError as exc:
+		print(f"Unable to load mounts.yml: {exc}")
 
 MOUNTS = mounts
 

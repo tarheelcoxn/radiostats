@@ -1,4 +1,5 @@
-import ruamel.yaml as yaml
+import ruamel.yaml as YAML
+from ruamel.yaml.error import YAMLError
 
 def read(config_file, base_dir):
     global DEBUG
@@ -10,11 +11,13 @@ def read(config_file, base_dir):
     global AGENT_PORT
     global AGENT_KEY
     global BACKEND_PATH
+
+    yaml = YAML(typ="safe", pure=True)
     with open(config_file, mode='r') as file:
         try:
-            config = yaml.safe_load(file)
-        except yaml.YAMLError as exc:
-            print(exc)
+            config = yaml.load(file)
+        except YAMLError as exc:
+            print(f"Unable to load {config_file}: {exc}")
 
     DEBUG = config["backend"]["debug"]
     SECRET_KEY = config["backend"]["secret_key"]
