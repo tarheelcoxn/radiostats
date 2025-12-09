@@ -1,4 +1,4 @@
-import ruamel.yaml as YAML
+from ruamel.yaml import YAML
 from ruamel.yaml.error import YAMLError
 
 def read(config_file, base_dir):
