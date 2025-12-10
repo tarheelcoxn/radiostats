@@ -52,7 +52,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
     'corsheaders',
-    'drf_yasg2',
+    'drf_spectacular',
     'rest_framework',
     "rest_auth",
     'rest_auth.registration',
@@ -81,17 +81,26 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.TokenAuthentication"
     ],
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
 
-# drf_yasg / Swagger UI / Redoc token auth
-SWAGGER_SETTINGS = {
-    "SECURITY_DEFINITIONS": {
-        "Token": {"type": "apiKey", "name": "Authorization", "in": "header"}
-    }
+# OLD drf_yasg / Swagger UI / Redoc token auth
+#SWAGGER_SETTINGS = {
+#    "SECURITY_DEFINITIONS": {
+#        "Token": {"type": "apiKey", "name": "Authorization", "in": "header"}
+#    }
+#}
+
+# NEW drf_spectacular
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'ibiblio Radiostats Backend API',
+    'VERSION': 'v1',
+    'CONTACT': {
+        'email': 'cjxu@live.unc.edu',
+    },
+    'SERVE_PERMISSIONS': ['rest_framework.permissions.AllowAny'],
 }
-
-
 
 
 ROOT_URLCONF = 'backend.urls'

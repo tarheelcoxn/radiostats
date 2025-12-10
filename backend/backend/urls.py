@@ -19,8 +19,9 @@ from django.urls import include, path
 from rest_framework import permissions, routers
 from backend.usage.views import ReportViewSet, StationViewSet, AgentSubmit, AgentReportQuery, AgentStationQuery,EmailReportView,AgentResubmit
 from backend.users.views import UserInfoViewSet,UserViewSet,ChangePassword,ChangeUserInfo
-from drf_yasg2.views import get_schema_view
-from drf_yasg2 import openapi
+#from drf_yasg2.views import get_schema_view
+#from drf_yasg2 import openapi
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
 router = routers.DefaultRouter()
 router.register("station", StationViewSet, basename="station")
@@ -28,15 +29,16 @@ router.register("usage", ReportViewSet, basename="usage")
 router.register("userinfo", UserInfoViewSet, basename="userinfo")
 router.register("user",UserViewSet,basename="user")
 
-schema_view = get_schema_view(
-   openapi.Info(
-      title="ibiblio Radiostats Backend API",
-      default_version='v1',
-      contact=openapi.Contact(email="cjxu@live.unc.edu"),
-   ),
-   public=True,
-   permission_classes=(permissions.AllowAny,),
-)
+# old drf_yasg2 method; new method using drf_spectacular has conf in settings.py
+#schema_view = get_schema_view(
+#   openapi.Info(
+#      title="ibiblio Radiostats Backend API",
+#      default_version='v1',
+#      contact=openapi.Contact(email="cjxu@live.unc.edu"),
+#   ),
+#   public=True,
+#   permission_classes=(permissions.AllowAny,),
+#)
 
 urlpatterns = [
     path('api/user/change_password/',ChangePassword.as_view(), name='change_password'),
@@ -52,6 +54,8 @@ urlpatterns = [
     path('api-auth/', include('rest_framework.urls')),
     path('rest-auth/', include("rest_auth.urls")),
     url('rest-auth/registration/', include('rest_auth.registration.urls')),
-    url(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
-    url(r'^swagger/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    #url(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
+    #url(r'^swagger/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('api/swagger/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
 ]

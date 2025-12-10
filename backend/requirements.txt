@@ -20,8 +20,8 @@ django-extensions==4.1
 #django-nose==1.4.7
 #django-rest-auth==0.9.5
 djangorestframework==3.16.1
+drf-spectacular
 #drf-yasg2==1.18.5
-drf-yasg2
 drf-yasg==1.21.11
 et-xmlfile==2.0.0
 idna==3.11
