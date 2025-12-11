@@ -15,4 +15,4 @@ RUN chown -R django:django sils_reports
 COPY deploy/backend/start.sh ./
 COPY deploy/backend/start_checks.py ./
 RUN chmod +x ./start.sh
-CMD ./start.sh
+CMD ["./start.sh"]
