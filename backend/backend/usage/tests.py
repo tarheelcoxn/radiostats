@@ -133,46 +133,46 @@ class TestUsage(APITestCase):
         login_response = self.client.post('/rest-auth/login/',{'username':'user','password':'password'},format='json')
         key = login_response.data.get('key')
         response = self.client.get('/api/usage/?approval=test',HTTP_AUTHORIZATION='Token ' + key)
-        self.assertEquals(1,len(response.data))
+        self.assertEqual(1,len(response.data))
 
     def test_adminBills(self):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.admin.token.key)
         response = self.client.get('/api/usage/')
-        self.assertEquals(4,len(response.data))
+        self.assertEqual(4,len(response.data))
 
     def test_update(self):
         login_response = self.client.post('/rest-auth/login/',{'username':'admin','password':'password'},format='json')
         key = login_response.data.get('key')
         response = self.client.patch('/api/usage/3/?status=PROCESSED&approval=t',HTTP_AUTHORIZATION='Token ' + key)
-        self.assertEquals(response.status_code,204)
+        self.assertEqual(response.status_code,204)
         response = self.client.patch('/api/usage/10/?status=PROCESSED&approval=t',HTTP_AUTHORIZATION='Token ' + key)
-        self.assertEquals(response.status_code,404)
+        self.assertEqual(response.status_code,404)
 
         login_response = self.client.post('/rest-auth/login/',{'username':'user','password':'password'},format='json')
         key = login_response.data.get('key')
         response = self.client.patch('/api/usage/3/?status=PROCESSED&approval=t',HTTP_AUTHORIZATION='Token ' + key)
-        self.assertEquals(response.status_code,403)
+        self.assertEqual(response.status_code,403)
 
 
 
     def test_adminApproval(self):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.admin.token.key)
         response = self.client.get('/api/usage/?approval=test')
-        self.assertEquals(200,response.status_code)
-        self.assertEquals(1,len(response.data))
+        self.assertEqual(200,response.status_code)
+        self.assertEqual(1,len(response.data))
 
 
     def test_outRangeFilter(self):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.admin.token.key)
         response = self.client.get('/api/usage/?start_dt=2090-05-31T15:43:00.000Z&end_dt=2090-06-29T15:43:00.000Z')
-        self.assertEquals(0,len(response.data))
+        self.assertEqual(0,len(response.data))
 
     def test_inRangeFilter(self):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.radio.token.key)
         start = datetime.date.today() - datetime.timedelta(days=31) 
         end = datetime.date.today() + datetime.timedelta(days=1) 
         response = self.client.get('/api/usage/?start_dt={}&end_dt={}'.format(start.strftime("%Y-%m-%dT%H:%M:%SZ") ,end.strftime("%Y-%m-%dT%H:%M:%SZ")  ))
-        self.assertEquals(2,len(response.data))
+        self.assertEqual(2,len(response.data))
 
     def test_dateFilter(self):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.radio.token.key)
@@ -180,32 +180,32 @@ class TestUsage(APITestCase):
         end = datetime.date.today() + datetime.timedelta(days=40)
         
         response = self.client.get('/api/usage/?start_dt={}&end_dt={}'.format(start.strftime("%Y-%m-%dT%H:%M:%SZ") ,end.strftime("%Y-%m-%dT%H:%M:%SZ")))
-        self.assertEquals(1,len(response.data))
+        self.assertEqual(1,len(response.data))
 
 
     def test_sortCost(self):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.admin.token.key)
         response = self.client.get('/api/usage/?order_by=cost_mult')
         res_lst = [cost['cost_mult'] for cost in json.loads(response.content)]
-        self.assertEquals(['2.3000000000','2.4000000000','2.5000000000','3.5000000000'],res_lst)
+        self.assertEqual(['2.3000000000','2.4000000000','2.5000000000','3.5000000000'],res_lst)
         response = self.client.get('/api/usage/?order_by=cost_mult:desc')
         res_lst = [cost['cost_mult'] for cost in json.loads(response.content)]
-        self.assertEquals(['3.5000000000','2.5000000000','2.4000000000','2.3000000000'],res_lst)
+        self.assertEqual(['3.5000000000','2.5000000000','2.4000000000','2.3000000000'],res_lst)
 
     def test_audit(self):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.admin.token.key)
         response = self.client.get('/api/usage/?audit_status=PROCESSING')
         res_lst = [audit['audit_status'] for audit in json.loads(response.content)]
-        self.assertEquals(['PROCESSING','PROCESSING','PROCESSING','PROCESSING'],res_lst)
+        self.assertEqual(['PROCESSING','PROCESSING','PROCESSING','PROCESSING'],res_lst)
     
     def test_badRequests(self):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.admin.token.key)
         response = self.client.post('/api/usage/',{})
-        self.assertEquals(405,response.status_code)
+        self.assertEqual(405,response.status_code)
         response = self.client.delete('/api/usage/')
-        self.assertEquals(405,response.status_code)
+        self.assertEqual(405,response.status_code)
         response = self.client.put('/api/usage/')
-        self.assertEquals(405,response.status_code)
+        self.assertEqual(405,response.status_code)
 
 
     
