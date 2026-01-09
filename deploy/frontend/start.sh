@@ -3,7 +3,7 @@
 # Find the mounted configuration
 export CONFIG_PATH=${CONFIG_PATH:-/config.yml}
 
-backend_protocol=$(if [ $(yq r ${CONFIG_PATH} backend.tls) = true ]; then echo "https"; else echo "http"; fi)
+backend_protocol=$(if [ $(yq '.backend.tls' ${CONFIG_PATH}) = true ]; then echo "https"; else echo "http"; fi)
 backend_host=$(yq r ${CONFIG_PATH} frontend.host)
 backend_port=$(yq r ${CONFIG_PATH} frontend.port)
 
