@@ -10,6 +10,6 @@ python manage.py collectstatic --noinput
 python start_checks.py
 
 # Set up mod_wsgi to use our desired port of choice
-export BACKEND_PORT=$(yq r ${CONFIG_PATH} backend.port)
+export BACKEND_PORT=$(yq .backend.tls ${CONFIG_PATH})
 
 mod_wsgi-express start-server --port=$BACKEND_PORT --url-alias /static /static/ --application-type module --user django --group django --locale C.UTF-8 --log-to-terminal backend.wsgi
