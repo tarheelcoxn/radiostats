@@ -59,7 +59,9 @@ def tabulate_single(id, station, yearmonth):
 
 		df = pd.DataFrame(columns = ['bandwidth', 'listeners', 'time'])
 		for csv in result_files:
-			df = df.append(pd.read_csv(csv), ignore_index = True)
+			## pandas DataFrame method append deprecated since version 1.4.0
+			#df = df.append(pd.read_csv(csv), ignore_index = True)
+			df = pd.concat([df, pd.read_csv(csv)], ignore_index = True)
 		report.mounts.append((mount, df['bandwidth'].quantile(.95) / 1048576))
 
 	# Items in report.mounts are tuples of the form (mount, mount_usage)
@@ -112,7 +114,8 @@ def tabulate():
 
 			df = pd.DataFrame(columns = ['bandwidth', 'listeners', 'time'])
 			for csv in months[month]:
-				df = df.append(pd.read_csv(csv), ignore_index = True)
+				#df = df.append(pd.read_csv(csv), ignore_index = True)
+				df = pd.concat([df, pd.read_csv(csv)], ignore_index = True)
 			mounts_monthly[(mount, month)] = df['bandwidth'].quantile(.95) / 1048576
 
 	# reports is a dict with keys of tuple (station, yearmonth) and values of
