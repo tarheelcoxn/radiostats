@@ -8,7 +8,7 @@ backend_host=$(yq '.frontend.host' ${CONFIG_PATH})
 backend_port=$(yq '.frontend.port' ${CONFIG_PATH})
 
 [ ! -z "${backend_port}" ] && backend_port=":${backend_port}"
-backend_path=$(yq r ${CONFIG_PATH} backend.path)
+backend_path=$(yq '.backend.path' ${CONFIG_PATH})
 
 # Create .env file from the top-level config.yml
 cat > .env <<EOL
