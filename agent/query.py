@@ -175,11 +175,13 @@ class StatsQuery(BaseQuery):
         MOUNT = '{}/{}/{}.csv'.format(DATA_DIR, name, query_time.strftime("%Y-%m-%d"))
         if os.path.exists(MOUNT):
             df = pd.read_csv(MOUNT)
-            df = df.append({'bandwidth':data['bandwidth'],'listeners': data['listeners'],'time':query_time.isoformat()+'Z'},ignore_index=True)
+            #df = df.append({'bandwidth':data['bandwidth'],'listeners': data['listeners'],'time':query_time.isoformat()+'Z'},ignore_index=True)
+            df = pd.concat([df, {'bandwidth':data['bandwidth'],'listeners': data['listeners'],'time':query_time.isoformat()+'Z'}], ignore_index=True)
             df.to_csv(MOUNT,index=False)
         else:
             df = pd.DataFrame()
-            df = df.append({'bandwidth':data['bandwidth'],'listeners': data['listeners'],'time':query_time.utcnow().isoformat()+'Z'},ignore_index=True)
+            #df = df.append({'bandwidth':data['bandwidth'],'listeners': data['listeners'],'time':query_time.utcnow().isoformat()+'Z'},ignore_index=True)
+            df = pd.concat([df, {'bandwidth':data['bandwidth'],'listeners': data['listeners'],'time':query_time.utcnow().isoformat()+'Z'}], ignore_index=True)
             df.to_csv(MOUNT,index=False)
 
 def setup_logger():
