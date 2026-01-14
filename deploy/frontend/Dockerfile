@@ -6,11 +6,10 @@ ENV PATH /app/node_modules/.bin:$PATH
 
 COPY frontend/package.json ./
 COPY frontend/package-lock.json ./
-RUN yarn import --network-timeout 100000 && rm package-lock.json
-RUN yarn install --network-timeout 100000
+RUN npm ci
 
 COPY frontend ./
-RUN yarn build
+RUN npm run build
 
 FROM nginx:alpine
 RUN apk add bash && apk add yq-go

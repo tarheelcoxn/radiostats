@@ -28,15 +28,19 @@ services:
     volumes:
       - ./config.yml:/config.yml
       - ./mounts.yml:/mounts.yml
-      - ./agent-data:/data
+      - agent-data:/data
     restart: always
   db:
     image: postgres:alpine
     restart: always
     volumes:
-      - ./data:/var/lib/postgresql/data
+      - postgres-data:/var/lib/postgresql/data
     environment:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=mypgpass
       - PGDATA=/var/lib/postgresql/data/pgdata
+
+volumes:
+  postgres-data:
+  agent-data:
