@@ -8,7 +8,6 @@ COPY frontend/package.json ./
 COPY frontend/package-lock.json ./
 RUN yarn import --network-timeout 100000 && rm package-lock.json
 RUN yarn install --network-timeout 100000
-RUN yarn add react-scripts
 
 COPY frontend ./
 RUN yarn build
