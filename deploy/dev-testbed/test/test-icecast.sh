@@ -69,11 +69,16 @@ echo ""
 echo "[3/3] Verifying streams produce data..."
 FAILED=()
 for mount in "${EXPECTED_MOUNTS[@]}"; do
-    BYTES=$(curl -sf --max-time 2 "${BASE_URL}/${mount}" 2>/dev/null | wc -c)
-    if [ "$BYTES" -gt 1000 ]; then
+    # curl exits with code 28 on timeout, which is expected for streams
+    # Temporarily disable pipefail to handle this
+    set +o pipefail
+    BYTES=$(curl -s --max-time 2 "${BASE_URL}/${mount}" 2>/dev/null | wc -c)
+    set -o pipefail
+    BYTES="${BYTES// /}"  # trim whitespace
+    if [ -n "$BYTES" ] && [ "$BYTES" -gt 1000 ] 2>/dev/null; then
         echo "  OK: /${mount} (${BYTES} bytes in 2s)"
     else
-        echo "  FAIL: /${mount} (only ${BYTES} bytes)"
+        echo "  FAIL: /${mount} (only ${BYTES:-0} bytes)"
         FAILED+=("$mount")
     fi
 done
