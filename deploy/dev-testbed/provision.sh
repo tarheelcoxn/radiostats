@@ -15,7 +15,8 @@
 
 set -euo pipefail
 
-SCRIPT_DIR="/mnt/dev-testbed"
+# Detect script directory (works when run via absolute path)
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 SOURCE_DIR="/opt/icecast-sources"
 ICECAST_PASSWORD="hackme"
 ICECAST_HOST="localhost"
@@ -32,9 +33,9 @@ if [[ $EUID -ne 0 ]]; then
     exit 1
 fi
 
-# Check script directory exists
-if [[ ! -d "$SCRIPT_DIR" ]]; then
-    echo "Error: $SCRIPT_DIR not found. Is the Lima mount working?"
+# Check required files exist
+if [[ ! -f "$SCRIPT_DIR/icecast.xml" ]]; then
+    echo "Error: $SCRIPT_DIR/icecast.xml not found. Is the Lima mount working?"
     exit 1
 fi
 

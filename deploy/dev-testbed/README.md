@@ -54,8 +54,8 @@ limactl start icecast-dev
 
 ```bash
 limactl shell icecast-dev
-# Inside the VM:
-sudo /mnt/dev-testbed/provision.sh
+# Inside the VM (adjust path to your radiostats checkout):
+sudo /Users/$USER/radiostats/radiostats/deploy/dev-testbed/provision.sh
 ```
 
 ### 3. Verify icecast is running

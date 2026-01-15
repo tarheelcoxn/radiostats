@@ -22,9 +22,9 @@ memory: "2GiB"
 disk: "20GiB"
 
 mounts:
-  # Mount this directory so provision.sh is accessible inside the VM
-  - location: "."
-    mountPoint: "/mnt/dev-testbed"
+  # Mount home directory so provision files are accessible inside the VM
+  # Files will be at /Users/<username>/radiostats/radiostats/deploy/dev-testbed/
+  - location: "~"
     writable: false
 
 portForwards:
@@ -43,7 +43,9 @@ provision:
   - mode: system
     script: |
       #!/bin/bash
-      # Install icecast and ffmpeg on first boot
+      set -eux
+      # Install icecast and ffmpeg on first boot (non-interactive)
+      export DEBIAN_FRONTEND=noninteractive
       apt-get update
       apt-get install -y icecast2 ffmpeg
-      echo "Packages installed. Run /mnt/dev-testbed/provision.sh to complete setup."
+      echo "Packages installed. Run provision.sh from the dev-testbed directory to complete setup."
