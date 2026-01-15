@@ -27,7 +27,9 @@ DEV_TESTBED_DIR="$(dirname "$SCRIPT_DIR")"
 RADIOSTATS_ROOT="$(dirname "$(dirname "$DEV_TESTBED_DIR")")"
 AGENT_DIR="${RADIOSTATS_ROOT}/agent"
 
-CONFIG_PATH="${1:-${DEV_TESTBED_DIR}/config.dev.yml.example}"
+# Convert config path to absolute
+CONFIG_ARG="${1:-${DEV_TESTBED_DIR}/config.dev.yml.example}"
+CONFIG_PATH="$(cd "$(dirname "$CONFIG_ARG")" && pwd)/$(basename "$CONFIG_ARG")"
 
 echo "=== Radiostats Agent Test ==="
 echo ""
@@ -41,11 +43,35 @@ if [ ! -f "$CONFIG_PATH" ]; then
     exit 1
 fi
 
+# Check for mounts.yml - agent expects it next to config file
+CONFIG_DIR="$(dirname "$CONFIG_PATH")"
+MOUNTS_FILE="${CONFIG_DIR}/mounts.yml"
+MOUNTS_DEV_FILE="${CONFIG_DIR}/mounts.dev.yml"
+
+if [ ! -e "$MOUNTS_FILE" ] && [ -f "$MOUNTS_DEV_FILE" ]; then
+    echo "INFO: Creating symlink mounts.yml -> mounts.dev.yml"
+    ln -sf mounts.dev.yml "$MOUNTS_FILE"
+fi
+
+if [ ! -e "$MOUNTS_FILE" ]; then
+    echo "FAIL: mounts.yml not found at ${MOUNTS_FILE}"
+    echo "      Create it or symlink to mounts.dev.yml"
+    exit 1
+fi
+
 # Check agent directory exists
 if [ ! -d "$AGENT_DIR" ]; then
     echo "FAIL: Agent directory not found: ${AGENT_DIR}"
     exit 1
 fi
+
+# Use agent virtualenv if it exists
+AGENT_VENV="${AGENT_DIR}/radiostats-agent-env"
+if [ -d "$AGENT_VENV" ]; then
+    echo "Using virtualenv: ${AGENT_VENV}"
+    source "${AGENT_VENV}/bin/activate"
+fi
+echo ""
 
 # Create temporary data directory
 TEST_DATA_DIR=$(mktemp -d)
@@ -69,18 +95,29 @@ os.environ['CONFIG_PATH'] = '${CONFIG_PATH}'
 
 try:
     from query import StatsQuery
-    from config import ICECAST_HOSTNAME, ICECAST_PORT
+    from config import ICECAST_HOSTNAME, ICECAST_PORT, ICECAST_USERNAME, ICECAST_PASSWORD
     print(f'Querying icecast at {ICECAST_HOSTNAME}:{ICECAST_PORT}')
 
-    sq = StatsQuery()
-    stats = sq.get_stats()
+    # StatsQuery requires options dict
+    options = {
+        'hostname': ICECAST_HOSTNAME,
+        'username': ICECAST_USERNAME,
+        'password': ICECAST_PASSWORD,
+        'verbose': False
+    }
+    sq = StatsQuery(options)
+
+    # Use internal methods to get stats without writing files
+    sq._ensure_icecast_data()
+    stats = sq._parse_data()
 
     if stats is None:
-        print('FAIL: get_stats() returned None')
+        print('FAIL: _parse_data() returned None')
         sys.exit(2)
 
     # Count sources
-    sources = stats.findall('source')
+    root = stats.getroot()
+    sources = root.findall('source')
     print(f'Found {len(sources)} source(s)')
 
     if len(sources) == 0:
@@ -114,7 +151,7 @@ echo "  OK: XML parsed successfully (verified in step 1)"
 echo ""
 echo "[3/3] Checking data extraction..."
 
-# Run a more detailed check
+# Run a more detailed check using the cached data from step 1
 python3 -c "
 import sys
 sys.path.insert(0, '${AGENT_DIR}')
@@ -122,10 +159,18 @@ import os
 os.environ['CONFIG_PATH'] = '${CONFIG_PATH}'
 
 from query import StatsQuery
+from config import ICECAST_HOSTNAME, ICECAST_USERNAME, ICECAST_PASSWORD
 
-sq = StatsQuery()
-stats = sq.get_stats()
-sources = stats.findall('source')
+options = {
+    'hostname': ICECAST_HOSTNAME,
+    'username': ICECAST_USERNAME,
+    'password': ICECAST_PASSWORD,
+    'verbose': False
+}
+sq = StatsQuery(options)
+stats = sq._parse_data()  # Use cached data
+root = stats.getroot()
+sources = root.findall('source')
 
 for source in sources:
     mount = source.get('mount', 'unknown')
