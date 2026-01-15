@@ -63,19 +63,19 @@ sudo /Users/$USER/radiostats/radiostats/deploy/dev-testbed/provision.sh
 From macOS (port 8000 is forwarded):
 ```bash
 # Check server status
-curl http://localhost:8000/status.xsl
+curl http://localhost:8001/status.xsl
 
 # Check admin stats (XML)
-curl -u admin:hackme http://localhost:8000/admin/stats
+curl -u admin:hackme http://localhost:8001/admin/stats
 ```
 
 ### 4. Test audio playback
 
 ```bash
 # Play one of the mounts
-ffplay http://localhost:8000/test-128.mp3
+ffplay http://localhost:8001/test-128.mp3
 # or
-vlc http://localhost:8000/test.ogg
+vlc http://localhost:8001/test.ogg
 ```
 
 ## Configure radiostats agent

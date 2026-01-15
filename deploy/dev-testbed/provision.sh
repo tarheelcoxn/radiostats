@@ -52,19 +52,20 @@ mkdir -p "$SOURCE_DIR"
 
 echo "[3/5] Creating FFmpeg streaming scripts..."
 
-# Mount configuration: name, frequency, format args
+# Mount configuration: name|frequency|codec|bitrate_args|content_type|format
 # Each mount gets a unique musical note frequency
+# Using | as delimiter to avoid conflicts with ffmpeg -b:a syntax
 declare -A MOUNTS=(
-    ["test-128-mp3"]="440:libmp3lame:-b:a 128k:audio/mpeg:mp3"
-    ["test-64-mp3"]="523:libmp3lame:-b:a 64k:audio/mpeg:mp3"
-    ["test-ogg"]="659:libvorbis:-q:a 5:audio/ogg:ogg"
-    ["test-128-aac"]="784:aac:-b:a 128k:audio/aac:adts"
-    ["test-48-aac"]="880:aac:-b:a 48k:audio/aac:adts"
-    ["test-opus"]="988:libopus:-b:a 64k:audio/ogg:ogg"
+    ["test-128-mp3"]="440|libmp3lame|-b:a 128k|audio/mpeg|mp3"
+    ["test-64-mp3"]="523|libmp3lame|-b:a 64k|audio/mpeg|mp3"
+    ["test-ogg"]="659|libvorbis|-q:a 5|audio/ogg|ogg"
+    ["test-128-aac"]="784|aac|-b:a 128k|audio/aac|adts"
+    ["test-48-aac"]="880|aac|-b:a 48k|audio/aac|adts"
+    ["test-opus"]="988|libopus|-b:a 64k|audio/ogg|ogg"
 )
 
 for mount_name in "${!MOUNTS[@]}"; do
-    IFS=':' read -r freq codec bitrate_args content_type format <<< "${MOUNTS[$mount_name]}"
+    IFS='|' read -r freq codec bitrate_args content_type format <<< "${MOUNTS[$mount_name]}"
 
     # Convert mount name to URL path (replace - with . for the actual mount point)
     # test-128-mp3 -> test-128.mp3

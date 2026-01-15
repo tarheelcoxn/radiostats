@@ -28,8 +28,9 @@ agent:
   port: 9000
   icecast:
     # Points to the dev icecast instance via Lima port forwarding
+    # Uses port 8001 to avoid conflict with radiostats backend on 8000
     hostname: 'localhost'
-    port: 8000
+    port: 8001
     data_file: 'data/response.xml'
     stats_url: '/admin/stats'
     # DEV CREDENTIALS - matches deploy/dev-testbed/icecast.xml

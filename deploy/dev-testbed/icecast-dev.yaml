@@ -28,9 +28,9 @@ mounts:
     writable: false
 
 portForwards:
-  # Icecast server
+  # Icecast server (using 8001 to avoid conflict with radiostats backend on 8000)
   - guestPort: 8000
-    hostPort: 8000
+    hostPort: 8001
     proto: tcp
 
 # No containerd needed - this VM runs native packages
