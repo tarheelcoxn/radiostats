@@ -15,8 +15,9 @@
 
 set -euo pipefail
 
-# Detect script directory (works when run via absolute path)
+# Detect script directory and parent (for shared configs)
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+SHARED_DIR="$(dirname "$SCRIPT_DIR")"  # Parent contains shared configs
 SOURCE_DIR="/opt/icecast-sources"
 ICECAST_PASSWORD="hackme"
 ICECAST_HOST="localhost"
@@ -33,14 +34,15 @@ if [[ $EUID -ne 0 ]]; then
     exit 1
 fi
 
-# Check required files exist
-if [[ ! -f "$SCRIPT_DIR/icecast.xml" ]]; then
-    echo "Error: $SCRIPT_DIR/icecast.xml not found. Is the Lima mount working?"
+# Check required files exist (shared configs in parent directory)
+if [[ ! -f "$SHARED_DIR/icecast.xml" ]]; then
+    echo "Error: $SHARED_DIR/icecast.xml not found."
+    echo "       Expected shared configs in: $SHARED_DIR"
     exit 1
 fi
 
 echo "[1/5] Installing icecast configuration..."
-cp "$SCRIPT_DIR/icecast.xml" /etc/icecast2/icecast.xml
+cp "$SHARED_DIR/icecast.xml" /etc/icecast2/icecast.xml
 chown icecast2:icecast /etc/icecast2/icecast.xml
 chmod 640 /etc/icecast2/icecast.xml
 

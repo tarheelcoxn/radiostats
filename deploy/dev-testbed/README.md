@@ -16,13 +16,9 @@ This directory contains configuration and scripts for creating a **development-o
 
 ## Overview
 
-This testbed creates a Lima VM running:
-- Icecast2 server with 6 test mounts
-- FFmpeg processes generating continuous test tones (different frequencies per mount)
+This testbed creates an icecast server with 6 test mounts, each streaming a unique frequency tone. The radiostats agent can query this instance to test data collection.
 
-The radiostats agent can query this icecast instance to test data collection without a real streaming setup.
-
-## Mounts
+### Test Mounts
 
 | Mount | Frequency | Format | Bitrate |
 |-------|-----------|--------|---------|
@@ -33,86 +29,158 @@ The radiostats agent can query this icecast instance to test data collection wit
 | `/test-48.aac` | 880Hz (A5) | AAC | 48kbps |
 | `/test.opus` | 988Hz (B5) | Opus | 64kbps |
 
-Each mount plays a distinct musical note, making it easy to verify which stream you're hearing.
+---
 
-## Prerequisites
+## Platform Options
 
-- [Lima](https://lima-vm.io/) installed on macOS
-- Network access to download packages in the VM
+Choose the deployment method that matches your environment:
 
-## Quick Start
+| Platform | Directory | Best For |
+|----------|-----------|----------|
+| **Docker** | `docker/` | Any OS with Docker installed |
+| **Native Debian/Ubuntu** | `native/` | Bare metal or VMs |
+| **Lima (macOS)** | `lima/` | macOS development |
 
-### 1. Create and start the VM
+---
+
+## Quick Start: Docker (Recommended)
+
+The simplest option for any platform with Docker installed.
 
 ```bash
-cd /path/to/radiostats/deploy/dev-testbed
+cd deploy/dev-testbed/docker
+docker compose up -d
+```
+
+Verify it's working:
+```bash
+curl http://localhost:8001/status-json.xsl
+```
+
+Stop:
+```bash
+docker compose down
+```
+
+---
+
+## Quick Start: Native Debian/Ubuntu
+
+For direct installation on Debian 13 (trixie) or Ubuntu 24.04+.
+
+```bash
+# Install packages
+sudo apt update
+sudo apt install -y icecast2 ffmpeg
+
+# Run provisioning script
+sudo ./native/provision.sh
+```
+
+Icecast will be available at `http://localhost:8000/`.
+
+---
+
+## Quick Start: Lima (macOS)
+
+For macOS users using Lima for Linux VMs.
+
+```bash
+cd deploy/dev-testbed/lima
 limactl create --name=icecast-dev icecast-dev.yaml
 limactl start icecast-dev
+
+# Run provisioning inside the VM
+limactl shell icecast-dev -- sudo bash /path/to/deploy/dev-testbed/native/provision.sh
 ```
 
-### 2. Run the provisioning script
+Icecast will be available at `http://localhost:8001/` (port forwarded).
+
+---
+
+## Testing
+
+### Verify Icecast is Running
 
 ```bash
-limactl shell icecast-dev
-# Inside the VM (adjust path to your radiostats checkout):
-sudo /Users/$USER/radiostats/radiostats/deploy/dev-testbed/provision.sh
+./test/test-icecast.sh localhost 8001
 ```
 
-### 3. Verify icecast is running
+This checks:
+1. Icecast responds to HTTP requests
+2. All 6 expected mounts are active
+3. Each mount is streaming audio data
 
-From macOS (port 8000 is forwarded):
+### Verify Agent Integration
+
 ```bash
-# Check server status
-curl http://localhost:8001/status.xsl
+./test/test-agent.sh ./config.dev.yml.example
+```
 
-# Check admin stats (XML)
+This checks:
+1. Agent can query icecast admin stats
+2. XML response parses correctly
+3. Data extraction works for listeners and bitrate
+
+### Manual Verification
+
+```bash
+# Check server status (JSON)
+curl http://localhost:8001/status-json.xsl
+
+# Check admin stats (XML) - requires auth
 curl -u admin:hackme http://localhost:8001/admin/stats
-```
 
-### 4. Test audio playback
-
-```bash
-# Play one of the mounts
+# Test audio playback
 ffplay http://localhost:8001/test-128.mp3
-# or
-vlc http://localhost:8001/test.ogg
 ```
 
-## Configure radiostats agent
+---
 
-Copy `config.dev.yml.example` to your `config.yml` and adjust paths as needed. The key settings:
+## Configure Radiostats Agent
+
+Copy `config.dev.yml.example` to your working `config.yml`:
 
 ```yaml
 agent:
   icecast:
-    hostname: 'localhost'  # Lima forwards port 8000 to macOS
-    port: 8000
+    hostname: 'localhost'
+    port: 8001  # or 8000 for native installs
     username: 'admin'
     password: 'hackme'
 ```
 
-Use `mounts.dev.yml` as your `mounts.yml` for testing.
+Use `mounts.dev.yml` as your mount mapping file.
 
-## Files in this directory
+---
 
-| File | Purpose |
-|------|---------|
-| `icecast-dev.yaml` | Lima VM configuration |
-| `provision.sh` | Automated setup script (runs inside VM) |
-| `icecast.xml` | Icecast server configuration template |
-| `icecast-source@.service` | Systemd unit template for FFmpeg sources |
-| `mounts.dev.yml` | Mount mapping for radiostats agent |
-| `config.dev.yml.example` | Example agent configuration |
+## Directory Structure
 
-## Stopping and removing
-
-```bash
-# Stop the VM
-limactl stop icecast-dev
-
-# Remove the VM entirely
-limactl delete icecast-dev
 ```
+deploy/dev-testbed/
+├── README.md                 # This file
+├── icecast.xml               # Shared: Icecast server config
+├── mounts.dev.yml            # Shared: Mount mappings for agent
+├── config.dev.yml.example    # Shared: Example agent config
+│
+├── docker/                   # Docker deployment
+│   ├── docker-compose.yml
+│   ├── Dockerfile.icecast
+│   └── entrypoint.sh
+│
+├── native/                   # Native Debian/Ubuntu
+│   ├── provision.sh
+│   └── icecast-source@.service
+│
+├── lima/                     # Lima (macOS)
+│   └── icecast-dev.yaml
+│
+└── test/                     # Test harness
+    ├── test-icecast.sh
+    └── test-agent.sh
+```
+
+---
 
 ## Credentials (DEV ONLY)
 
