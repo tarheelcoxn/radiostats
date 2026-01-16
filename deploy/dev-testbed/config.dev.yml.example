@@ -1,0 +1,42 @@
+# Example configuration for use with the development icecast testbed
+#
+# WARNING: FOR DEVELOPMENT AND TESTING ONLY
+# DO NOT USE IN PRODUCTION
+#
+# This configuration points to the dev icecast instance running in Lima.
+# Copy this to config.yml in the radiostats root directory.
+---
+frontend:
+  host: '127.0.0.1'
+  port: 3000
+  tls: false
+
+backend:
+  debug: true
+  host: '127.0.0.1'
+  port: 8000
+  path: '/'
+  tls: false
+  secret_key: 'dev-only-secret-key-do-not-use-in-production'
+  database:
+    engine: 'sqlite3'
+    name: 'db.sqlite3'
+
+agent:
+  host: '127.0.0.1'
+  debug: true
+  port: 9000
+  icecast:
+    # Points to the dev icecast instance via Lima port forwarding
+    # Uses port 8001 to avoid conflict with radiostats backend on 8000
+    hostname: 'localhost'
+    port: 8001
+    data_file: 'data/response.xml'
+    stats_url: '/admin/stats'
+    # DEV CREDENTIALS - matches deploy/dev-testbed/icecast.xml
+    username: 'admin'
+    password: 'hackme'
+    request_timeout: 5
+  cache_ttl: 240
+  data_dir: 'data'
+  key: 'dev-only-agent-key-do-not-use-in-production'

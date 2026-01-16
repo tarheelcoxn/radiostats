@@ -1,0 +1,15 @@
+# Mount mappings for development testbed
+#
+# WARNING: FOR DEVELOPMENT AND TESTING ONLY
+# DO NOT USE IN PRODUCTION
+#
+# Maps the "teststation" station to all 6 test mounts.
+# Copy this to mounts.yml when using the dev icecast instance.
+---
+teststation:
+  - test-128.mp3
+  - test-64.mp3
+  - test.ogg
+  - test-128.aac
+  - test-48.aac
+  - test.opus

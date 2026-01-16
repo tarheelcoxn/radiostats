@@ -1,0 +1,23 @@
+# Systemd template unit for FFmpeg icecast sources
+#
+# WARNING: FOR DEVELOPMENT AND TESTING ONLY
+# DO NOT USE IN PRODUCTION
+#
+# Usage: systemctl enable icecast-source@test-128-mp3.service
+# The instance name (%i) maps to a script in /opt/icecast-sources/
+
+[Unit]
+Description=Icecast FFmpeg source for %i
+After=network.target icecast2.service
+Wants=icecast2.service
+
+[Service]
+Type=simple
+ExecStart=/opt/icecast-sources/%i.sh
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

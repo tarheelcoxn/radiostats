@@ -1,0 +1,24 @@
+# Docker Compose for development icecast testbed
+#
+# WARNING: FOR DEVELOPMENT AND TESTING ONLY
+# DO NOT USE IN PRODUCTION
+#
+# Usage:
+#   cd deploy/dev-testbed/docker
+#   docker compose up -d
+#   docker compose logs -f
+#   docker compose down
+
+services:
+  icecast:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.icecast
+    ports:
+      - "8001:8000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/status-json.xsl"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
