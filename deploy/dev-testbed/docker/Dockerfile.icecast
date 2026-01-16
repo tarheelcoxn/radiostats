@@ -1,0 +1,35 @@
+# Dockerfile for development icecast testbed
+#
+# WARNING: FOR DEVELOPMENT AND TESTING ONLY
+# DO NOT USE IN PRODUCTION
+#
+# Builds an image with icecast2 and ffmpeg that generates 6 test tone streams.
+
+FROM debian:trixie-slim
+
+LABEL description="Development icecast testbed with synthetic audio sources"
+LABEL warning="FOR DEVELOPMENT AND TESTING ONLY"
+
+# Install icecast2 and ffmpeg
+RUN apt-get update && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+        icecast2 \
+        ffmpeg \
+        curl \
+        && rm -rf /var/lib/apt/lists/*
+
+# Copy shared configuration from parent context
+COPY icecast.xml /etc/icecast2/icecast.xml
+
+# Copy entrypoint script
+COPY docker/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+# Icecast runs on port 8000
+EXPOSE 8000
+
+# Health check
+HEALTHCHECK --interval=10s --timeout=5s --retries=3 \
+    CMD curl -f http://localhost:8000/status-json.xsl || exit 1
+
+ENTRYPOINT ["/entrypoint.sh"]
