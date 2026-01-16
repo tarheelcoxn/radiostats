@@ -11,5 +11,5 @@ pytz==2025.2
 requests==2.32.5
 ruamel.yaml==0.18.16
 six==1.17.0
-urllib3==2.6.1
+urllib3==2.6.3
 XlsxWriter==3.2.9
