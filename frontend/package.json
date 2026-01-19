@@ -14,8 +14,6 @@
     "@types/react-data-grid": "^4.0.5",
     "axios": "^0.30.2",
     "date-fns": "^2.16.1",
-    "enzyme": "^3.11.0",
-    "enzyme-adapter-react-16": "^1.15.5",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.2.0",

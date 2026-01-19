@@ -1,43 +1,46 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import Header from './Header';
-import Adapter from "enzyme-adapter-react-16";
 import { BrowserRouter } from 'react-router-dom';
-import { render } from "@testing-library/react";
-import { shallow, configure } from "enzyme";
-import Button from '@material-ui/core/Button';
+import { render, screen, fireEvent } from "@testing-library/react";
 
-configure({ adapter: new Adapter() });
-
-// describe("render without crashing", () => {
-//     it("renders the header", () => {
-//         const div = document.createElement("div");
-//         ReactDOM.render(<Header/>, div);
-//     })
-// })
+const renderHeader = () => {
+    return render(
+        <BrowserRouter>
+            <Header />
+        </BrowserRouter>
+    );
+};
 
 describe("render dynamic user title", () => {
     it("logging in as radio station user", () => {
         localStorage.setItem("userTitle", "Radio User")
-        const { queryByTestId } = render(<BrowserRouter> <Header /> </BrowserRouter>)
+        const { queryByTestId } = renderHeader()
         expect(queryByTestId("greetingsContainer")).toHaveTextContent("Hi Radio User!")
     })
 
     it("logging in as ibiblio admin", () => {
         localStorage.setItem("userTitle", "Admin")
-        const { queryByTestId } = render(<BrowserRouter> <Header /> </BrowserRouter>)
+        const { queryByTestId } = renderHeader()
         expect(queryByTestId("greetingsContainer")).toHaveTextContent("Hi Admin!")
     })
 })
 
+/**
+ * Original test: Used shallow(<Header />) and wrapper.find('#logoutBtn').simulate('click')
+ * to test that clicking logout clears localStorage.
+ *
+ * Migration: Use @testing-library/react's render and fireEvent to simulate
+ * the same user interaction and verify localStorage is cleared.
+ */
 describe("logging out", () => {
     it("clears items in localStorage", () => {
         localStorage.setItem("user", "alowhrnskkapslllwqqoijan")
         localStorage.setItem("userTitle", "Admin")
 
-        const wrapper = shallow(<Header />)
-        wrapper.find('#logoutBtn').simulate('click')
-        
+        renderHeader();
+        const logoutBtn = screen.getByTestId('logoutBtn');
+        fireEvent.click(logoutBtn);
+
         expect(localStorage.getItem("user")).toBe(null);
         expect(localStorage.getItem("userTitle")).toBe(null);
     })
