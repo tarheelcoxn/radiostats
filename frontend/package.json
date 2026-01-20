@@ -28,6 +28,9 @@
   "eslintConfig": {
     "extends": "react-app"
   },
+  "overrides": {
+    "@svgr/webpack": "^6.5.1"
+  },
   "browserslist": {
     "production": [
       ">0.2%",
