@@ -29,19 +29,40 @@ Choose the correct architecture for your Mac:
 1. Open Parallels Desktop
 2. File > New > Install Windows or another OS from a DVD or image file
 3. Select the Debian ISO
-4. Configure the VM:
-   - **Name**: `radiostats-docker-test`
+4. Name the VM `radiostats-docker-test`
+5. Tick **Customize settings before installation**
+6. In the settings window, configure:
    - **CPU**: 2 cores
    - **RAM**: 4096 MB
-   - **Disk**: 40 GB
+   - **Disk**: 40 GB minimum (a higher default value is fine)
 
 ### 3. Install Debian
 
 During installation:
-- Choose minimal installation (no desktop environment needed)
-- Create a user (e.g., `debian`)
-- Enable SSH server when prompted for software selection
-- Skip other optional components to keep it lightweight
+- Set a root password when prompted
+- Create user **radiostats** when prompted for full name and username
+- Set a password for the radiostats user
+- When prompted for software selection, enable **SSH server** only
+- Skip desktop environment and other optional components
+
+After first boot, configure sudo for the radiostats user:
+
+```bash
+# Log in as root
+su -
+
+# Install sudo
+apt-get update
+apt-get install -y sudo
+
+# Add radiostats user to sudo group
+usermod -aG sudo radiostats
+
+# Log out of root
+exit
+
+# Log out and back in as radiostats for sudo to take effect
+```
 
 ### 4. Install Parallels Tools
 
@@ -74,15 +95,25 @@ The shared folder will be available at `/media/psf/radiostats` after reboot.
 
 ### 6. Configure Port Forwarding
 
-In Parallels VM settings:
-1. Go to Hardware > Network
-2. Click "Advanced Settings"
-3. Add port forwarding rules:
+Port forwarding is configured in Parallels Desktop Preferences (not per-VM settings):
 
-| Host Port | Guest Port | Protocol | Description |
-|-----------|------------|----------|-------------|
-| 3080 | 3000 | TCP | Frontend |
-| 8080 | 8000 | TCP | Backend |
+1. In VM settings, go to **Hardware > Network**
+2. Confirm network is set to **Shared Network (Recommended)**
+3. Click **Advanced...**
+4. Click **Open Network Preferences...**
+5. In the **Port forwarding rules** section at the bottom, click **+** to add rules:
+
+| Protocol | Source port | Forward to | Destination port |
+|----------|-------------|------------|------------------|
+| TCP | 3080 | radiostats-docker-test | 3000 |
+| TCP | 8080 | radiostats-docker-test | 8000 |
+
+For each rule:
+- **Protocol**: TCP
+- **Source port**: the Mac host port (3080 or 8080)
+- **Forward to**: select the VM (`radiostats-docker-test`)
+- **Destination port**: the guest port (3000 or 8000)
+- Click **OK**
 
 ---
 
