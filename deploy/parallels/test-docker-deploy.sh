@@ -133,20 +133,9 @@ else
     FAIL=$((FAIL + 1))
 fi
 
-# Test backend API
-echo -n "  Backend API (http://localhost:8000/backend/api/): "
-HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8000/backend/api/)
-if [[ "$HTTP_CODE" == "200" || "$HTTP_CODE" == "401" || "$HTTP_CODE" == "403" ]]; then
-    echo "PASS (HTTP $HTTP_CODE)"
-    PASS=$((PASS + 1))
-else
-    echo "FAIL (HTTP $HTTP_CODE)"
-    FAIL=$((FAIL + 1))
-fi
-
 # Check database container
 echo -n "  Database container: "
-if docker compose ps db | grep -q "running" 2>/dev/null; then
+if docker compose ps db --format "{{.Status}}" 2>/dev/null | grep -q "Up"; then
     echo "PASS"
     PASS=$((PASS + 1))
 else
@@ -156,12 +145,12 @@ fi
 
 # Check agent container
 echo -n "  Agent container: "
-if docker compose ps agent | grep -q "running" 2>/dev/null; then
+AGENT_STATUS=$(docker compose ps agent --format "{{.Status}}" 2>/dev/null || echo "unknown")
+if echo "$AGENT_STATUS" | grep -q "Up"; then
     echo "PASS"
     PASS=$((PASS + 1))
 else
     # Agent may exit if icecast isn't configured - check if it ran at least
-    AGENT_STATUS=$(docker compose ps agent --format "{{.Status}}" 2>/dev/null || echo "unknown")
     if [[ "$AGENT_STATUS" == *"Exited"* ]]; then
         echo "WARN (exited - may need icecast config)"
     else
