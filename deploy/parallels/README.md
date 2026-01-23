@@ -87,7 +87,7 @@ sudo reboot
 In Parallels VM settings:
 1. Go to Hardware > Shared Folders
 2. Add a shared folder:
-   - **Source**: `/Users/cmpalmer/radiostats`
+   - **Source**: The directory containing the `radiostats` repository on your Mac
    - **Name**: `radiostats`
 3. Enable "Share all Mac disks with Linux" OR add specific folder
 

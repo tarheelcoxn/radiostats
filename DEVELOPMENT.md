@@ -50,11 +50,11 @@ limactl start radiostats
 
 ### 2. Access the repository
 
-Lima mounts your home directory automatically. If your repo is at `~/radiostats/radiostats`, it's available inside the VM at the same path.
+Lima mounts your home directory automatically. Your repo is available inside the VM at the same path as on your host.
 
 ```bash
 limactl shell radiostats
-cd ~/radiostats/radiostats
+cd /path/to/radiostats   # e.g., ~/projects/radiostats
 ```
 
 ### 3. Create configuration files
