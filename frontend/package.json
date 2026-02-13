@@ -33,7 +33,8 @@
     "webpack-dev-server": "^5.2.1",
     "postcss": "^8.4.31",
     "lodash": "^4.17.23",
-    "jsonpath": "^1.2.0"
+    "jsonpath": "^1.2.0",
+    "qs": "^6.14.2"
   },
   "browserslist": {
     "production": [
