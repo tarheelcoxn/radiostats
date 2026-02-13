@@ -9,7 +9,7 @@ colorama==0.4.6
 coreapi==2.3.3
 coreschema==0.0.4
 coverage==7.13.0
-cryptography==46.0.3
+cryptography==46.0.5
 defusedxml==0.7.1
 #Django==3.2.25
 Django==5.2.11
