@@ -34,7 +34,16 @@
     "postcss": "^8.4.31",
     "lodash": "^4.17.23",
     "jsonpath": "^1.2.0",
-    "qs": "^6.14.2"
+    "qs": "^6.14.2",
+    "ajv-formats": {
+      "ajv": "^8.18.0"
+    },
+    "schema-utils": {
+      "ajv": "^8.18.0"
+    },
+    "workbox-build": {
+      "ajv": "^8.18.0"
+    }
   },
   "browserslist": {
     "production": [
