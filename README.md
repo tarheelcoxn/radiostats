@@ -5,16 +5,18 @@ ibiblio hosts online streams for radio stations. Our task is to develop a web ap
 Getting Started
 ===
 
-## Prerequisites:
-<br>
+**Preferred: use the containerized development environment.** See [DEVELOPMENT.md](DEVELOPMENT.md) for setup instructions using Lima (macOS) or Docker/nerdctl. Running components directly on your host machine is not recommended — it requires installing Node.js and Python runtimes locally and can leave behind artifacts (`node_modules`, virtual environments) outside of any isolation boundary.
+
+## Running locally without containers (legacy / not recommended)
+
+These instructions predate the containerized setup. Use them only if you cannot use containers and understand the trade-offs.
+
+### Prerequisites
 
 - [Python 3.X](https://www.python.org/downloads/)
 - [Node.js](https://nodejs.org/en/download/)
 
-Installing:
-===
-
-## 1. Setup Python VirtualEnv
+### 1. Setup Python VirtualEnv
 __Windows__
 ```powershell
 cd \path\to\repository-root
@@ -34,7 +36,7 @@ pip install -r agent/requirements.txt
 pip install -r backend/requirements.txt
 ```
 
-## 2 a.) Run Backend Locally
+### 2 a.) Run Backend Locally
 __Windows__
 ```powershell
 cd \path\to\repository-root
@@ -52,7 +54,7 @@ cd ./backend
 python manage.py runserver
 ```
 
-## 2 b.) Running Frontend Locally
+### 2 b.) Running Frontend Locally
 
 __Windows__
 ```powershell
@@ -60,6 +62,32 @@ cd \path\to\repository-root
 cd .\frontend
 npm install
 npm run start
+```
+
+__Mac/Linux__
+```sh
+cd /path/to/repository-root
+cd ./frontend
+npm install
+npm run start
+```
+
+### 2 c.) Running Agent Locally
+__Windows__
+```powershell
+cd \path\to\repository-root
+.\Scripts\activate
+copy-item config.dev.yml config.yml
+cd .\agent\
+python start.py
+```
+__Mac/Linux__
+```sh
+cd /path/to/repository-root
+source bin/activate
+cp config.dev.yml config.yml
+cd ./agent
+python start.py
 ```
 
 ## 3.) ibiblio Admin User creation
@@ -88,34 +116,6 @@ you will then be prompted to fill out the username, email, and password for the 
 3. Create UserInfo
 
 ![userinfo_creation](userinfo_creation.gif)
-
-
-
-__Mac/Linux__
-```sh
-cd /path/to/repository-root
-cd ./frontend
-npm install
-npm run start
-```
-
-## 2 c.) Running Agent Locally
-__Windows__
-```powershell
-cd \path\to\repository-root
-.\Scripts\activate
-copy-item config.dev.yml config.yml
-cd .\agent\
-python start.py
-```
-__Mac/Linux__
-```sh
-cd /path/to/repository-root
-source bin/activate
-cp config.dev.yml config.yml
-cd ./agent
-python start.py
-```
 
 __Warranty:__
 
