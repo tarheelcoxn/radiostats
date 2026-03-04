@@ -35,6 +35,8 @@
     "lodash": "^4.17.23",
     "jsonpath": "^1.2.0",
     "qs": "^6.14.2",
+    "underscore": "^1.13.8",
+    "serialize-javascript": "^7.0.3",
     "ajv-formats": {
       "ajv": "^8.18.0"
     },
