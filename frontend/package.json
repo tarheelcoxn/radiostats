@@ -31,7 +31,7 @@
   "overrides": {
     "@tootallnate/once": "^3.0.1",
     "@svgr/webpack": "^6.5.1",
-    "webpack-dev-server": "^5.2.1",
+    "svgo": "^2.8.2",
     "postcss": "^8.4.31",
     "lodash": "^4.17.23",
     "jsonpath": "^1.2.0",
@@ -40,9 +40,6 @@
     "serialize-javascript": "^7.0.3",
     "ajv-formats": {
       "ajv": "^8.18.0"
-    },
-    "fork-ts-checker-webpack-plugin": {
-      "ajv": "^6.14.0"
     },
     "css-minimizer-webpack-plugin": {
       "schema-utils": { "ajv": "^8.18.0" }
@@ -66,6 +63,7 @@
       "schema-utils": { "ajv": "^8.18.0" }
     },
     "webpack-dev-server": {
+      ".": "^5.2.1",
       "schema-utils": { "ajv": "^8.18.0" }
     },
     "workbox-build": {
