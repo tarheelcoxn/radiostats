@@ -40,8 +40,32 @@
     "ajv-formats": {
       "ajv": "^8.18.0"
     },
-    "schema-utils": {
-      "ajv": "^8.18.0"
+    "fork-ts-checker-webpack-plugin": {
+      "ajv": "^6.14.0"
+    },
+    "css-minimizer-webpack-plugin": {
+      "schema-utils": { "ajv": "^8.18.0" }
+    },
+    "eslint-webpack-plugin": {
+      "schema-utils": { "ajv": "^8.18.0" }
+    },
+    "file-loader": {
+      "schema-utils": { "ajv": "^8.18.0" }
+    },
+    "mini-css-extract-plugin": {
+      "schema-utils": { "ajv": "^8.18.0" }
+    },
+    "terser-webpack-plugin": {
+      "schema-utils": { "ajv": "^8.18.0" }
+    },
+    "webpack": {
+      "schema-utils": { "ajv": "^8.18.0" }
+    },
+    "webpack-dev-middleware": {
+      "schema-utils": { "ajv": "^8.18.0" }
+    },
+    "webpack-dev-server": {
+      "schema-utils": { "ajv": "^8.18.0" }
     },
     "workbox-build": {
       "ajv": "^8.18.0"

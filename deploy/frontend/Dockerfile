@@ -6,6 +6,7 @@ ENV PATH /app/node_modules/.bin:$PATH
 
 COPY frontend/package.json ./
 COPY frontend/package-lock.json ./
+COPY frontend/.npmrc ./
 RUN npm ci
 
 COPY frontend ./
